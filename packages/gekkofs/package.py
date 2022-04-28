@@ -17,9 +17,10 @@ class Gekkofs(CMakePackage):
     maintainers = ['marcvef']
 
     version('develop', submodules=True)
+    version('prometheus', sha256='cb477c7d32c1f983df322663dcd6796205083a83dd6978a7f7facc1ed6b2effd', url="https://france.paratools.com/tau_metric_proxy/gekkofs-prom.tar.gz")
 
     # Fix date dependency detection
-    patch("date.patch")
+    patch("date.patch", when="@develop")
 
     # All dependencies
     depends_on('syscall-intercept +gekkofs')
@@ -27,6 +28,7 @@ class Gekkofs(CMakePackage):
     depends_on('rocksdb +rtti')
     depends_on('lz4')
     depends_on('date +tz +shared cxxstd=14 tzdb=system')
+    depends_on('tau-metric-proxy +mpi', when="+tau", type=('build', 'run'))
 
     # variant key : [ DOC, ENABLED_BY_DEFAULT, CMAKE_FLAG(BOOL) ]
     all_variants = {"jemalloc": ["Use Jemalloc allocator", False, None],
@@ -36,10 +38,13 @@ class Gekkofs(CMakePackage):
                     "forwarding": ["Enable forwarding mode", False, "GKFS_ENABLE_FORWARDING"],
                     "agios": ["Enable AGIOS scheduling", False, "GKFS_ENABLE_AGIOS"],
                     "guided": ["Use guided data-distributor", False, "GKFS_USE_GUIDED_DISTRIBUTION"],
+                    "tau": ["Enable tau metric proxy prometheus exporter", False, "GKFS_PROMETHEUS_STATS"],
                     "tests": ["Build tests", False, "GKFS_BUILD_TESTS"]}
 
     for k, v in all_variants.items():
         variant(k, default=v[1], description=v[0])
+
+    conflicts("+tau", when="@develop",msg="Only the @prometheus version can have +tau")
 
     depends_on("jemalloc", when="+jemalloc")
 
