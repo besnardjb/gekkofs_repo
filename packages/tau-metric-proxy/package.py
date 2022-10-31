@@ -26,14 +26,12 @@ from spack import *
 class TauMetricProxy(AutotoolsPackage):
     """An HPC oriented prometheus proxy"""
 
-    # FIXME: Add a proper url for your package's homepage here.
-    homepage = "https://www.example.com"
+    homepage = "https://www.admire-eurohpc.eu/"
     url      = "http://france.paratools.com/tau_metric_proxy/tau_metric_proxy-0.1.tar.gz"
 
-    # FIXME: Add a list of GitHub accounts to
-    # notify when the package is updated.
-    # maintainers = ['github_user1', 'github_user2']
+    maintainers = ['besnardjb']
 
+    version('0.2', sha256='90070c53426b38b57e5cdfc3f81b0825b81ecc7b5b0e627b3ee9ff943111018a')
     version('0.1', sha256='9df23747746e63c60638e19ff2b1615a984cb6a2ec0755804a1766ab2bf1e292')
 
     depends_on('autoconf', type='build')
@@ -42,8 +40,10 @@ class TauMetricProxy(AutotoolsPackage):
     depends_on('m4',       type='build')
 
 
-    variant("mpi", default=False, description="Build the MPI exporter library")
+    variant("python", default=False, description="Build the python CLI client")
+    depends_on('py-pip', type=('build', 'run'), when="+python")
 
+    variant("mpi", default=False, description="Build the MPI exporter library")
     depends_on("mpi", when="+mpi")
 
     def autoreconf(self, spec, prefix):

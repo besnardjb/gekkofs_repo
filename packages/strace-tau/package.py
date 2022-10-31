@@ -24,23 +24,18 @@ from spack import *
 
 
 class StraceTau(AutotoolsPackage):
-    """FIXME: Put a proper description of your package here."""
+    """A modified version of strace sending data to the tau-metric-proxy"""
 
-    # FIXME: Add a proper url for your package's homepage here.
-    homepage = "https://www.example.com"
+    homepage = "https://www.admire-eurohpc.eu/"
     url      = "http://france.paratools.com/tau_metric_proxy/strace_tau-0.1.tar.gz"
 
-    # FIXME: Add a list of GitHub accounts to
-    # notify when the package is updated.
-    # maintainers = ['github_user1', 'github_user2']
+    maintainers = ['besnardjb']
 
+    version('0.2', sha256='2276014c12f5a06c538640addcc79e4ae3e8ab488acf5b497bdc023af3173303')
     version('0.1', sha256='5a3e4e5fdb9eaaa7b4c682128e3a442bd620197d59483f5ce0203197a8f4e35b')
 
-    # FIXME: Add dependencies if required.
-    depends_on('tau-metric-proxy +mpi')
+    depends_on('tau-metric-proxy', type=('build', 'run'))
 
     def configure_args(self):
-        # FIXME: Add arguments other than --prefix
-        # FIXME: If not needed delete this function
-        args = ["--enable-mpers=check"]
+        args = ["--enable-mpers=check", "--program-prefix=tau_"]
         return args
